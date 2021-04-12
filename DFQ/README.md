@@ -44,12 +44,12 @@ QuatNConv2d 和 QuantNLinear 只量化输入。
 
 run the equalized model by:
 ```
-python main_cls.py --quantize --relu --equalize
+python main_ssd.py --quantize --relu --equalize
 ```
 
 run the equalized and bias-corrected model by:
 ```
-python main_cls.py --quantize --relu --equalize --correction
+python main_ssd.py --quantize --relu --equalize --correction
 ```
 
 ## 实验结果
