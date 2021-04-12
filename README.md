@@ -24,6 +24,6 @@ FP32的tensor量化为INT8需要4步：缩放；取整；偏移；反量化。
 
 ## 4.量化实现
 
-1.Data-Free Quantization Through Weight Equalization and Bias Correction​openaccess.thecvf.com
+1.https://openaccess.thecvf.com/content_ICCV_2019/papers/Nagel_Data-Free_Quantization_Through_Weight_Equalization_and_Bias_Correction_ICCV_2019_paper.pdf
 
 代码：DFQ
