@@ -39,7 +39,7 @@ QuatNConv2d 和 QuantNLinear 只量化输入。
 ### Bias correction
 本节讲述的是如何校正量化(四舍五入的不可逆性)带来的偏差。之前的研究认为量化带来的误差是无偏的，不影响输出的均值，但是本文发现权重的量化误差会导致输出的有偏误差，从而改变下一层输入数据的分布，在其他量化方法中方法中，可以直接计算 activation 量化前后的误差，加入 loss 中作为一个正则项，但是本文基于 Data-Free 的立场，决定继续采用网络中的已有信息(其实就是每层的权重和BN的各个参数信息)，所以需要从数学形式上进行推导。
 
-
+这部分在 dfq.py 中实现。
 ## 代码运行
 
 run the equalized model by:
@@ -53,7 +53,7 @@ python main_cls.py --quantize --relu --equalize --correction
 ```
 
 ## 实验结果
-On detection task  
+
 Tested with [MobileNetV2 SSD-Lite model](https://github.com/qfgaohao/pytorch-ssd)
 
 <table>
