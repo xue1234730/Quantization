@@ -10,10 +10,9 @@
 ## 如何量化？
 神经网络量化的实现需要在常见操作（卷积，矩阵乘法，激活函数，池化，拼接等）前后分别加上quantize和dequantize操作，quantize操作将input从浮点数转换成8 位整数，dequantize操作把output从8 位整数转回浮点数。
 FP32的tensor量化为INT8需要4步：
-缩放；取整；偏移；反量化
+缩放；取整；偏移；反量化。
 
-
-
+![image](https://github.com/xue1234730/Quantization/blob/main/quantization.jpg)
 ## 4.量化实现
 1.Data-Free Quantization Through Weight Equalization and Bias Correction​openaccess.thecvf.com
 代码：DFQ
