@@ -1,5 +1,7 @@
 # DFQ
 关于 Data Free Quantization 的 Pytorch 实现
+
+https://openaccess.thecvf.com/content_ICCV_2019/papers/Nagel_Data-Free_Quantization_Through_Weight_Equalization_and_Bias_Correction_ICCV_2019_paper.pdf
 ## 介绍
 该论文提出了一种不需要额外数据来 finetune 恢复精度的离线 8bit 量化方法，它利用了 relu 函数的尺寸等价缩放的特性来调整不同channel的权重范围，并且还能纠正量化过程中引入的偏差。
 
