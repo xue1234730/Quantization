@@ -98,11 +98,11 @@ python inference/inference_sim.py -a resnet50 -b 512 -pcq_w -pcq_a -sh --qtype i
 
 ## 实验结果
 ![experiments](fig/experiments.png)
-
+<br>
 
 # Additional knowladge
 ## Post-Training Quantization
-量化后的神经网络中的参数通常还需要进行调整,这可以通过对模型进行再训练来完成，这个过程称为量化感知训练训练(Quantization-Aware Training，QAT)，或者不进行再训练，这个过程通常被称为训练后量化(Post-Training Quantization，PTQ)。在 QAT 中，预先训练的模型被量化，然后使用训练数据进行微调，以调整参数和恢复精度下降。在 PTQ 中，使用校准数据(例如，一小部分训练数据)对预训练模型进行校准，以计算裁剪范围和比例因子。然后，根据标定结果对模型进行量化。校准过程通常与QAT的微调过程并行进行。<br>
+量化后的神经网络中的参数通常还需要进行调整,这可以通过对模型进行再训练来完成，这个过程称为量化感知训练训练(Quantization-Aware Training，QAT)，或者不进行再训练，这个过程通常被称为训练后量化(Post-Training Quantization，PTQ)。在 QAT 中，预先训练的模型被量化，然后使用训练数据进行微调，以调整参数和恢复精度下降。在 PTQ 中，使用校准数据(例如，一小部分训练数据)对预训练模型进行校准，以计算裁剪范围和比例因子。然后，根据标定结果对模型进行量化。校准过程通常与QAT的微调过程并行进行。<br><br/>
 在 PTQ 中，所有的权值和激活量化参数都是确定的，无需对神经网络模型进行再训练。因此，PTQ 是一种快速量化神经网络模型的方法。然而，与 QAT 相比，这通常是以较低的精度为代价的。
 
 ## The Laplace distribution && Gaussian distribution
