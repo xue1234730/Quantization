@@ -117,5 +117,7 @@ GEMM为通用矩阵乘<br>
 LOWP（Low-precision）是指输入和输出矩阵项都是最多8位的整数，标量类型是 uint8_t。<br>
 gemmlowp 允许对基于 uint8 值的矩阵执行计算，但是这些矩阵仅在以某种方式近似于实数矩阵的情况下才有用。
 
-
+## Resnet
+![image](https://user-images.githubusercontent.com/58316204/115180847-29067a00-a109-11eb-9e85-8b57b65fef9e.png)<br>
+![image](https://user-images.githubusercontent.com/58316204/115180860-2e63c480-a109-11eb-97fc-948ed361a934.png)<br>
 
