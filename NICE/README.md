@@ -42,7 +42,7 @@ python3 main.py --model resnet --depth 18 --bitwidth -5 --act-bitwidth -5 --step
 ```
 >* Prec@1 82.06
 
-## Additional Knoledgement
+## Additional Knowledge
 ### Uniform Additive Noise
 噪声<br>
 实际的图像经常会受到一些随机的影响而退化，可以理解为原图受到干扰和污染。通常就就把这个退化成为噪声（noise）。在我们采集、传输或者处理的过程中都有可能产生噪声，因此噪声的出现是多方面的原因。<br>
