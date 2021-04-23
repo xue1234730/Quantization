@@ -32,6 +32,6 @@ FP32的tensor量化为INT8需要4步：缩放；取整；偏移；反量化。
 
 代码：PQT
 
-3. NICE: Noise Injection and Clamping Estimation for Neural Network Quantization
+3.NICE: Noise Injection and Clamping Estimation for Neural Network Quantization
 
 代码： NICE
