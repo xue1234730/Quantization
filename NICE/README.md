@@ -38,7 +38,7 @@ Bb 为偏置的量化位宽，以与权重相同的方式被截断和量化
 ## 使用
 使用 Resnet-Cifar10，W5A5，将 Cifar10 数据集存放在目录 ./results 中或使用 --datapath "datapath" 设置存放路径。<br>
 ```
-python3 main.py --model resnet --depth 18 --bitwidth -5 --act-bitwidth -5 --step 21 --gpus 0 --epochs 120 -b 256 --dataset cifar10 --start-from-zero --resume none --learning_rate=0.01 --quant_start_stage=0 --quant_epoch_step=3 --schedule 300
+python3 main.py --model resnet --depth 18 --bitwidth 5 --act-bitwidth 5 --step 21 --gpus 0 --epochs 120 -b 256 --dataset cifar10 --start-from-zero --resume none --learning_rate=0.01 --quant_start_stage=0 --quant_epoch_step=3 --schedule 300
 ```
 >* Prec@1 82.06
 
