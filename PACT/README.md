@@ -11,6 +11,7 @@ PACT激活函数,相当于relu函数截断上界，输出限制在 [0,α]:<br>
 将其线性量化为k位:<br>
 ![image](https://user-images.githubusercontent.com/58316204/117118180-0dff5f80-adc3-11eb-8c5b-959a5c4f5115.png)<br>
 
+代码：
 ```
 y = torch.clamp(x, min = 0, max = alpha.item())
 scale = (2**k - 1) / alpha
@@ -24,6 +25,8 @@ y_q = torch.round( y * scale) / scale
 
 # DoReFa量化
 代码中还使用了[DoReFa](https://arxiv.org/pdf/1606.06160.pdf)量化方法
+
+代码：
 ```
 def quantize_k(r_i, k):
   scale = (2**k - 1)
