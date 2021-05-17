@@ -1,63 +1,34 @@
-# Convolutional networks using PyTorch
+# Scalable Methods for 8-bit Training of Neural Networks
+https://arxiv.org/pdf/1805.11046.pdf
 
-This is a complete training example for Deep Convolutional Networks on various datasets (ImageNet, Cifar10, Cifar100, MNIST).
+## 介绍
+对训练完毕的网络模型进行定点量化可以提升模型在推理过程中的计算效率，但是对于如何确定最优的量化比特数以及量化方案尚无定论。文章首先通过理论分析指出，在网络训练过程中，除部分特定的操作外，大部分操作对于模型权重精度的下降并不敏感。基于这一结论，本文提出对模型权重、各层特征图以及梯度信号进行量化，并且维护了两个量化精度不同的梯度信号，在不损失精度的情况下最大程度地提升计算效率。同时，由于batch normalization层对于量化精度要求更高，本文提出了Range BN层以提升对量化误差的容忍度。
 
-Available models include:
-```
-'alexnet', 'amoebanet', 'darts', 'densenet', 'googlenet', 'inception_resnet_v2', 'inception_v2', 'mnist', 'mobilenet', 'mobilenet_v2', 'nasnet', 'resnet', 'resnet_se', 'resnet_zi', 'resnet_zi_se', 'resnext', 'resnext_se'
-```
+### Range Batch-Normalization
+对于 nxd 维，输入为 x = (x(1),x(2),...,x(d)) 的层，传统 batch norm 将每一维归一化为<br>
+![image](https://github.com/xue1234730/Quantization/blob/main/convnet/fig/1.PNG)<br>
+本文中，作者使用 Range BN 代替传统BN操作。假设输入服从高斯分布，则输入的范围与标准差大小相关。Range BN 使用尺度调整C(n)乘以输入值的范围来接近标准偏差σ。即：<br>
+![image](https://github.com/xue1234730/Quantization/blob/main/convnet/fig/2.PNG)<br>
+其中，![image](https://github.com/xue1234730/Quantization/blob/main/convnet/fig/Cn.PNG) ，range(·) = max(·)-min(·)
 
-It is based off [imagenet example in pytorch](https://github.com/pytorch/examples/tree/master/imagenet) with helpful additions such as:
-  - Training on several datasets other than imagenet
-  - Complete logging of trained experiment
-  - Graph visualization of the training/validation loss and accuracy
-  - Definition of preprocessing and optimization regime for each model
-  - Distributed training
- 
- To clone:
- ```
- git clone --recursive https://github.com/eladhoffer/convNet.pytorch
- ```
- 
- example for efficient multi-gpu training of resnet50 (4 gpus, label-smoothing):
- ```
- python -m torch.distributed.launch --nproc_per_node=4  main.py --model resnet --model-config "{'depth': 50}" --eval-batch-size 512 --save resnet50_ls --label-smoothing 0.1
-```
+### Quantized Back-Propagation
+1.Quantization methods：文章使用 GEMMLOWP 量化结构，其中激活的最大值和最小值是由 Range BN　计算的。
+2.Gradients Bifurcation：在反向传播算法中，从最后一层开始递归计算梯度,每一层都需要导出两组梯度来执行递归更新。<br>
+损失函数L的梯度:<br>
+![image](https://github.com/xue1234730/Quantization/blob/main/convnet/fig/4.PNG)<br>
+每一层activation的梯度:<br>
+![image](https://github.com/xue1234730/Quantization/blob/main/convnet/fig/5.PNG)<br>
+每层权重梯度更新:<br>
+![image](https://github.com/xue1234730/Quantization/blob/main/convnet/fig/6.PNG)<br>
+3.Straight-Through Estimator:文章使用了 STE 方法来通过离散变量近似微分。这是处理离散变量的精确导数几乎处处为零这一问题的最简单和硬件友好的方法。
 
-This code can be used to implement several recent papers:
-  - [Hoffer et al. (2018): Fix your classifier: the marginal value of training the last weight layer](https://arxiv.org/abs/1801.04540)
-  - [Hoffer et al. (2018): Norm matters: efficient and accurate normalization schemes in deep networks](https://arxiv.org/abs/1803.01814)
-  
-      For example, training ResNet18 with L1 norm (instead of batch-norm):
-      ```
-      python main.py --model resnet --model-config "{'depth': 18, 'bn_norm': 'L1'}" --save resnet18_l1 -b 128
-      ```
-  - [Banner et al. (2018): Scalable Methods for 8-bit Training of Neural Networks](https://arxiv.org/abs/1805.11046)
-  
-    For example, training ResNet18 with 8-bit quantization:
-    ```
+### 使用
+
+    
     python main.py --model resnet --model-config "{'depth': 18, 'quantize':True}" --save resnet18_8bit -b 64
-    ```
-  - [Hoffer et al. (2020): Augment Your Batch: Improving Generalization Through Instance Repetition](http://openaccess.thecvf.com/content_CVPR_2020/html/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.html)
     
-    For example, training the resnet44 + cutout example in paper:
-    ```
-    python main.py --dataset cifar10 --model resnet --model-config "{'depth': 44}"  --duplicates 40 --cutout -b 64 --epochs 100 --save resnet44_cutout_m-40
-    ```
 
-  - [Hoffer et al. (2019): Mix & Match: training convnets with mixed image sizes for improved accuracy, speed and scale resiliency](https://arxiv.org/abs/1908.08986)
-    
-    For example, training the resnet44 with mixed sizes example in paper:
-    ```
-    python main.py --model resnet --dataset cifar10 --save cifar10_mixsize_d -b 64 --model-config "{'regime': 'sampled_D+'}" --epochs 200
-    ```
-    Then, calibrate for specific size and evaluate using
-    ```
-    python evaluate.py ./results/cifar10_mixsize_d/checkpoint.pth.tar --dataset cifar10 -b 64 --input-size 32 --calibrate-bn
-    ```
-    Pretrained models (ResNet50, ImageNet) are also available [here](https://www.dropbox.com/sh/058gqn562vfspa3/AACBukNaWV0_ElwmqBHdsolGa?dl=0)
-    
-## Dependencies
+Dependencies:
 
 - [pytorch](<http://www.pytorch.org>)
 - [torchvision](<https://github.com/pytorch/vision>) to load the datasets, perform image transforms
@@ -104,7 +75,6 @@ class Model(nn.Module):
 
 # Citation
 
-If you use the code in your paper, consider citing one of the implemented works.
 ```
 @inproceedings{hoffer2018fix,
   title={Fix your classifier: the marginal value of training the last weight layer},
@@ -112,38 +82,5 @@ If you use the code in your paper, consider citing one of the implemented works.
   booktitle={International Conference on Learning Representations},
   year={2018},
   url={https://openreview.net/forum?id=S1Dh8Tg0-},
-}
-```
-```
-@inproceedings{hoffer2018norm,
-  title={Norm matters: efficient and accurate normalization schemes in deep networks},
-  author={Hoffer, Elad and Banner, Ron and Golan, Itay and Soudry, Daniel},
-  booktitle={Advances in Neural Information Processing Systems},
-  year={2018}
-}
-```
-```
-@inproceedings{banner2018scalable,
-  title={Scalable Methods for 8-bit Training of Neural Networks},
-  author={Banner, Ron and Hubara, Itay and Hoffer, Elad and Soudry, Daniel},
-  booktitle={Advances in Neural Information Processing Systems},
-  year={2018}
-}
-```
-```
-@inproceedings{Hoffer_2020_CVPR,
-  author = {Hoffer, Elad and Ben-Nun, Tal and Hubara, Itay and Giladi, Niv and Hoefler, Torsten and Soudry, Daniel},
-  title = {Augment Your Batch: Improving Generalization Through Instance Repetition},
-  booktitle = {The IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-  month = {June},
-  year = {2020}
-}
-```
-```
-@article{hoffer2019mix,
-  title={Mix \& Match: training convnets with mixed image sizes for improved accuracy, speed and scale resiliency},
-  author={Hoffer, Elad and Weinstein, Berry and Hubara, Itay and Ben-Nun, Tal and Hoefler, Torsten and Soudry, Daniel},
-  journal={arXiv preprint arXiv:1908.08986},
-  year={2019}
 }
 ```
