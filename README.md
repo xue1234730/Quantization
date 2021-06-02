@@ -47,3 +47,7 @@ FP32的tensor量化为INT8需要4步：缩放；取整；偏移；反量化。
 6.HAWQ-V3: Dyadic Neural Network Quantization
 
 代码：HAWQ
+
+7.TRAINED TERNARY QUANTIZATION
+
+代码：TTQ
