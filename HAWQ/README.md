@@ -35,7 +35,7 @@ HAWQ使用均匀量化，对权重使用对称量化，对激活使用非对称�
 pip install -r requirements.txt
 ```
 
-### 运行
+### 代码
 uniform 8-bit quantization for resnet50 on ImageNet. （修改数据集存放路径"--data /path/to/imagenet/ " 以及结果保存路径 “--save-path /path/to/checkpoints/”）
 ```
 export CUDA_VISIBLE_DEVICES=0
