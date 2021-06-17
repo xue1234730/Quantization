@@ -52,6 +52,6 @@ FP32的tensor量化为INT8需要4步：缩放；取整；偏移；反量化。
 
 代码：TTQ
 
-8. Deep Neural Network Quantization via Layer-Wise Optimization Using Limited Training Data
+8.Deep Neural Network Quantization via Layer-Wise Optimization Using Limited Training Data
 
 代码：LDNQ
